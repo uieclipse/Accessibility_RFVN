@@ -1,0 +1,4 @@
+**/*.map
+src/
+*.test.ts
+*.test.tsx
