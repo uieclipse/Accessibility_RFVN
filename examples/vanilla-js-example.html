@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accessible Website - Vanilla JS Example</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #333;
+    }
+
+    header {
+      background: #1f2937;
+      color: white;
+      padding: 1rem 2rem;
+    }
+
+    header h1 {
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    nav a:hover,
+    nav a:focus {
+      background: rgba(255, 255, 255, 0.2);
+      outline: 2px solid #60a5fa;
+      outline-offset: 2px;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-family: inherit;
+      min-height: 44px;
+    }
+
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    input[aria-invalid="true"] {
+      border-color: #ef4444;
+    }
+
+    .error-message {
+      color: #dc2626;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+
+    .helper-text {
+      color: #6b7280;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+
+    button {
+      min-height: 44px;
+      min-width: 44px;
+      padding: 0.75rem 1.5rem;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #2563eb;
+    }
+
+    button:focus {
+      outline: 2px solid #3b82f6;
+      outline-offset: 2px;
+    }
+
+    button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow: auto;
+      box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal h2 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .tabs {
+      margin-top: 2rem;
+    }
+
+    .tab-list {
+      display: flex;
+      border-bottom: 2px solid #e5e7eb;
+      gap: 0;
+      list-style: none;
+    }
+
+    .tab-button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      background: none;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      color: #6b7280;
+      font-weight: 500;
+    }
+
+    .tab-button:focus {
+      outline: 2px solid #3b82f6;
+      outline-offset: -2px;
+    }
+
+    .tab-button.active {
+      border-bottom-color: #3b82f6;
+      color: #3b82f6;
+    }
+
+    .tab-panel {
+      padding: 1.5rem 0;
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .color-check {
+      background: #f0f9ff;
+      padding: 1rem;
+      border-radius: 4px;
+      margin-top: 1rem;
+    }
+
+    .users-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .users-table thead {
+      background: #f3f4f6;
+    }
+
+    .users-table th,
+    .users-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    footer {
+      padding: 2rem;
+      border-top: 1px solid #e5e7eb;
+      text-align: center;
+      color: #6b7280;
+    }
+
+    /* Screen reader only text */
+    .sr-only {
+      position: absolute;
+      left: -10000px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <!-- Skip link -->
+  <a href="#main-content" style="
+    position: absolute;
+    left: -10000px;
+    top: 0;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    z-index: 10000;
+  ">Skip to main content</a>
+
+  <!-- Header -->
+  <header>
+    <h1>My Accessible Website</h1>
+    <nav aria-label="Main navigation">
+      <ul role="menubar">
+        <li role="none">
+          <a href="#" role="menuitem" tabindex="0">Home</a>
+        </li>
+        <li role="none">
+          <a href="#" role="menuitem" tabindex="-1">About</a>
+        </li>
+        <li role="none">
+          <a href="#" role="menuitem" tabindex="-1">Services</a>
+        </li>
+        <li role="none">
+          <a href="#" role="menuitem" tabindex="-1">Contact</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <h1>Welcome to Accessible Web Design</h1>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <ul class="tab-list" role="tablist">
+        <li role="presentation">
+          <button
+            role="tab"
+            aria-selected="true"
+            aria-controls="form-panel"
+            tabindex="0"
+            class="tab-button active"
+            id="form-tab"
+          >
+            Contact Form
+          </button>
+        </li>
+        <li role="presentation">
+          <button
+            role="tab"
+            aria-selected="false"
+            aria-controls="users-panel"
+            tabindex="-1"
+            class="tab-button"
+            id="users-tab"
+          >
+            User List
+          </button>
+        </li>
+        <li role="presentation">
+          <button
+            role="tab"
+            aria-selected="false"
+            aria-controls="settings-panel"
+            tabindex="-1"
+            class="tab-button"
+            id="settings-tab"
+          >
+            Settings
+          </button>
+        </li>
+      </ul>
+
+      <!-- Form Tab -->
+      <div
+        id="form-panel"
+        role="tabpanel"
+        aria-labelledby="form-tab"
+        class="tab-panel active"
+      >
+        <h2>Contact Us</h2>
+        <form id="contactForm">
+          <div class="form-group">
+            <label for="name">Full Name <span aria-label="required">*</span></label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              required
+              aria-required="true"
+            />
+            <div id="name-error" class="error-message" role="alert" style="display: none;"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address <span aria-label="required">*</span></label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              aria-required="true"
+              aria-describedby="email-helper"
+            />
+            <div id="email-helper" class="helper-text">
+              We'll never share your email
+            </div>
+            <div id="email-error" class="error-message" role="alert" style="display: none;"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea
+              id="message"
+              name="message"
+              rows="5"
+              placeholder="Your message here..."
+            ></textarea>
+          </div>
+
+          <button type="submit">Send Message</button>
+        </form>
+      </div>
+
+      <!-- Users Tab -->
+      <div
+        id="users-panel"
+        role="tabpanel"
+        aria-labelledby="users-tab"
+        class="tab-panel"
+        hidden
+      >
+        <h2>Users</h2>
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="usersList">
+            <tr>
+              <td>Alice Johnson</td>
+              <td>alice@example.com</td>
+              <td>Active</td>
+            </tr>
+            <tr>
+              <td>Bob Smith</td>
+              <td>bob@example.com</td>
+              <td>Active</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Settings Tab -->
+      <div
+        id="settings-panel"
+        role="tabpanel"
+        aria-labelledby="settings-tab"
+        class="tab-panel"
+        hidden
+      >
+        <h2>Accessibility Settings</h2>
+        <fieldset>
+          <legend>WCAG Compliance Level</legend>
+          <label>
+            <input type="radio" name="wcag" value="A" /> Level A (Minimum)
+          </label>
+          <br />
+          <label>
+            <input type="radio" name="wcag" value="AA" checked /> Level AA (Recommended)
+          </label>
+          <br />
+          <label>
+            <input type="radio" name="wcag" value="AAA" /> Level AAA (Enhanced)
+          </label>
+        </fieldset>
+
+        <div class="color-check">
+          <h3>Color Contrast Check</h3>
+          <p>Text vs Background: <strong id="contrast-ratio">21:1</strong></p>
+          <ul>
+            <li>✓ WCAG AA: <span id="aa-result">Pass</span></li>
+            <li>✓ WCAG AAA: <span id="aaa-result">Pass</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add User Button -->
+    <button id="addUserBtn" style="margin-top: 2rem;">
+      Add New User
+    </button>
+  </main>
+
+  <!-- Modal -->
+  <div id="modalOverlay" class="modal-overlay" role="presentation">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h2 id="modalTitle">Add New User</h2>
+      <form id="userForm">
+        <div class="form-group">
+          <label for="userName">Full Name <span aria-label="required">*</span></label>
+          <input type="text" id="userName" required aria-required="true" />
+          <div id="userName-error" class="error-message" role="alert" style="display: none;"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="userEmail">Email <span aria-label="required">*</span></label>
+          <input type="email" id="userEmail" required aria-required="true" />
+          <div id="userEmail-error" class="error-message" role="alert" style="display: none;"></div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit">Add User</button>
+          <button type="button" id="closeModalBtn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Script -->
+  <script type="module">
+    import {
+      initializeAccessibility,
+      checkContrast,
+      KEYS,
+      getFocusableElements,
+      announceToScreenReader,
+    } from '@a11y-toolkit/core';
+
+    // Initialize
+    initializeAccessibility({
+      wcagLevel: 'AA',
+      enableLogging: true,
+    });
+
+    // ===== Tab Navigation =====
+    const tabButtons = document.querySelectorAll('.tab-button');
+    let focusedTabIndex = 0;
+
+    tabButtons.forEach((button, index) => {
+      button.addEventListener('click', () => {
+        setActiveTab(index);
+      });
+
+      button.addEventListener('keydown', (e) => {
+        let newIndex = focusedTabIndex;
+
+        if (e.key === KEYS.ARROW_RIGHT || e.key === KEYS.ARROW_DOWN) {
+          e.preventDefault();
+          newIndex = (focusedTabIndex + 1) % tabButtons.length;
+        } else if (e.key === KEYS.ARROW_LEFT || e.key === KEYS.ARROW_UP) {
+          e.preventDefault();
+          newIndex = (focusedTabIndex - 1 + tabButtons.length) % tabButtons.length;
+        } else if (e.key === KEYS.HOME) {
+          e.preventDefault();
+          newIndex = 0;
+        } else if (e.key === KEYS.END) {
+          e.preventDefault();
+          newIndex = tabButtons.length - 1;
+        }
+
+        if (newIndex !== focusedTabIndex) {
+          setActiveTab(newIndex);
+        }
+      });
+    });
+
+    function setActiveTab(index) {
+      // Update buttons
+      tabButtons.forEach((btn, i) => {
+        btn.classList.toggle('active', i === index);
+        btn.setAttribute('aria-selected', String(i === index));
+        btn.setAttribute('tabindex', i === index ? '0' : '-1');
+      });
+
+      // Update panels
+      document.querySelectorAll('[role="tabpanel"]').forEach((panel, i) => {
+        panel.classList.toggle('active', i === index);
+        panel.hidden = i !== index;
+      });
+
+      focusedTabIndex = index;
+      tabButtons[index].focus();
+    }
+
+    // ===== Contact Form =====
+    document.getElementById('contactForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const nameError = document.getElementById('name-error');
+      const emailError = document.getElementById('email-error');
+
+      nameError.style.display = 'none';
+      emailError.style.display = 'none';
+
+      let hasError = false;
+
+      if (!name.trim()) {
+        nameError.textContent = 'Name is required';
+        nameError.style.display = 'block';
+        hasError = true;
+      }
+
+      if (!email.includes('@')) {
+        emailError.textContent = 'Valid email is required';
+        emailError.style.display = 'block';
+        hasError = true;
+      }
+
+      if (!hasError) {
+        announceToScreenReader('Form submitted successfully', 'assertive');
+        document.getElementById('contactForm').reset();
+        alert('Thank you for your message!');
+      }
+    });
+
+    // ===== Modal =====
+    const modal = document.getElementById('modalOverlay');
+    const addUserBtn = document.getElementById('addUserBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const userForm = document.getElementById('userForm');
+
+    addUserBtn.addEventListener('click', () => {
+      modal.classList.add('open');
+      const firstInput = modal.querySelector('input');
+      if (firstInput) firstInput.focus();
+    });
+
+    closeModalBtn.addEventListener('click', () => {
+      modal.classList.remove('open');
+      addUserBtn.focus();
+    });
+
+    modal.addEventListener('keydown', (e) => {
+      if (e.key === KEYS.ESCAPE) {
+        modal.classList.remove('open');
+        addUserBtn.focus();
+      }
+
+      // Trap focus
+      if (e.key === KEYS.TAB) {
+        const focusable = getFocusableElements(modal);
+        if (focusable.length === 0) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    });
+
+    userForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('userName').value;
+      const email = document.getElementById('userEmail').value;
+      const nameError = document.getElementById('userName-error');
+      const emailError = document.getElementById('userEmail-error');
+
+      nameError.style.display = 'none';
+      emailError.style.display = 'none';
+
+      let hasError = false;
+
+      if (!name.trim()) {
+        nameError.textContent = 'Name is required';
+        nameError.style.display = 'block';
+        hasError = true;
+      }
+
+      if (!email.includes('@')) {
+        emailError.textContent = 'Valid email is required';
+        emailError.style.display = 'block';
+        hasError = true;
+      }
+
+      if (!hasError) {
+        const usersList = document.getElementById('usersList');
+        const row = usersList.insertRow();
+        row.innerHTML = `
+          <td>${name}</td>
+          <td>${email}</td>
+          <td>Active</td>
+        `;
+
+        announceToScreenReader(`${name} added to user list`, 'assertive');
+        modal.classList.remove('open');
+        userForm.reset();
+        addUserBtn.focus();
+      }
+    });
+
+    // ===== Color Contrast Check =====
+    const result = checkContrast('#333333', '#FFFFFF');
+    document.getElementById('contrast-ratio').textContent = `${result.ratio}:1`;
+    document.getElementById('aa-result').textContent = result.AA ? 'Pass ✓' : 'Fail ✗';
+    document.getElementById('aaa-result').textContent = result.AAA ? 'Pass ✓' : 'Fail ✗';
+
+    // ===== Navigation Keyboard Support =====
+    const menuItems = document.querySelectorAll('[role="menuitem"]');
+    let focusedMenuIndex = 0;
+
+    menuItems.forEach((item, index) => {
+      item.addEventListener('keydown', (e) => {
+        if (e.key === KEYS.ARROW_RIGHT) {
+          e.preventDefault();
+          focusedMenuIndex = (index + 1) % menuItems.length;
+          menuItems[focusedMenuIndex].focus();
+        } else if (e.key === KEYS.ARROW_LEFT) {
+          e.preventDefault();
+          focusedMenuIndex = (index - 1 + menuItems.length) % menuItems.length;
+          menuItems[focusedMenuIndex].focus();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
